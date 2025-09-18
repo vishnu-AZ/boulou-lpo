@@ -1,0 +1,53 @@
+.back-to-top {
+    position: fixed;
+    right: 30px;
+    bottom: 120px;
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background: blue;
+    color: #fff;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.back-to-top:hover {
+    background: gray;
+    color: blue !important;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(240, 47, 130, 0.2);
+}
+
+.back-to-top-icon {
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.back-to-top-icon i {
+    font-size: 20px;
+}
+
+.back-to-top.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* Dark mode enhancement */
+@media (prefers-color-scheme: dark) {
+    .back-to-top {
+        background: #002633;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+}

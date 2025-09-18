@@ -1,0 +1,39 @@
+html {
+    overflow-x: hidden;
+}
+
+@media screen and (max-width: 768px) {
+    ._chatbox_1ok4r_41 {
+        width: 100% !important;
+        right: 0 !important;
+        bottom: 100px !important;
+    }
+
+}
+
+.history__img-wrap-five::before {
+    content: "";
+    position: absolute;
+    right: 15px !important;
+    bottom: 0px;
+    width: 93% !important;
+    height: 95%;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    -o-border-radius: 30px;
+    -ms-border-radius: 30px;
+    border-radius: 30px;
+    background: #0047ffcc;
+    z-index: -1;
+}
+
+@media screen and (max-width: 768px) {
+    .aos-animate {
+        font-size: 24px !important;
+    }
+
+    ._chatbox_kwhbg_64 {
+        width: 100% !important;
+        right: 0 !important;
+    }
+}

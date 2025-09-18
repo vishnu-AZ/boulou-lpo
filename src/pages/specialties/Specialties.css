@@ -1,0 +1,25 @@
+.services__item-two {
+    padding: 20px 20px !important;
+}
+
+.services__content-two p {
+
+    min-height: 150px !important;
+}
+
+.services__content-two .title {
+
+    min-height: 50px !important;
+}
+
+/* Default: show images */
+.legal-hero-floating {
+    display: block;
+}
+
+/* Hide on mobile view */
+@media (max-width: 768px) {
+    .legal-hero-floating {
+        display: none;
+    }
+}
