@@ -23,7 +23,7 @@ import lpo18 from "../../../public/assets/lpo-icons/18.png";
 import right from "../../../public/assets/img/icons/right_arrow.svg"
 import h2_cta_shape from "../../../public/assets/img/images/h2_cta_shape.svg";
 import lpo19 from "../../../public/assets/lpo1/icon1.png";
-
+// import { Link } from "react-router-dom";
 
 
 
@@ -58,7 +58,7 @@ const InternalGuide = () => {
             assistance from case coordination to paralegal services that enhances your firm's
             efficiency and results.
           </p>
-          <a href="https://bouloulpo.com/internalguide" className="legal-hero-btn" target="_blank"
+          <a href="https://outlook.office365.com/book/BoulouLPOClientBookings@bouloublue.com/?ismsaljsauthenabled=true" className="legal-hero-btn" target="_blank"
             rel="noopener noreferrer" >
             Book a Demo
           </a>
