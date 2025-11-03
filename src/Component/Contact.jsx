@@ -1,10 +1,10 @@
 // import React, { useState } from "react";
 // import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
-// import { createLead } from "../api/LeadService"
+// import { createLead } from "../api/LeadService";
+
 // const Contact = () => {
 //   const [isSubmitting, setIsSubmitting] = useState(false);
-
 //   const [formData, setFormData] = useState({
 //     name: "",
 //     email: "",
@@ -26,28 +26,47 @@
 //     setIsSubmitting(true);
 
 //     try {
-//       const response = await fetch(
-//         "https://bouloulpo.com/bouloulpo_admin/api/save_contact_form", // Replace with your actual endpoint
-//         {
-//           method: "GET",
+//       // Prepare shared payload
+//       const payload = {
+//         name: formData.name,
+//         email: formData.email,
+//         phone: formData.number,
+//         comment: formData.comment,
+//         saveInfo: formData.saveInfo,
+//       };
+
+//       // ---------------------------
+//       // Run both API calls in parallel (POST method)
+//       // ---------------------------
+//       const [laravelResponse, leadResponse] = await Promise.all([
+//         // ✅ Call your Laravel API via POST
+//         fetch("https://bouloulpo.com/bouloulpo_admin/api/save_contact_form", {
+//           method: "POST",
 //           headers: {
 //             "Content-Type": "application/json",
-//             "X-Name": formData.name,
-//             "X-Email": formData.email,
-//             "X-Phone": formData.number,
-//             "X-Comment": formData.comment,
-//             "X-Save-Info": formData.saveInfo.toString(),
 //           },
-//         }
-//       );
+//           body: JSON.stringify(payload),
+//         }),
 
-//       if (!response.ok) throw new Error("Failed to submit message");
+//         // ✅ Call your internal createLead API (stores in leads table)
+//         createLead("boulou_lpo", "application", {
+//           name: payload.name,
+//           email: payload.email,
+//           phone: payload.phone,
+//           service_needs: payload.comment,
+//         }),
+//       ]);
 
-//       const result = await response.json();
-//       console.log("API response:", result);
-//       toast.success("Message submitted successfully!");
+//       // ✅ Check Laravel response
+//       if (!laravelResponse.ok) throw new Error("Laravel API failed");
+//       const laravelResult = await laravelResponse.json();
 
-//       // Clear form
+//       console.log("Laravel API response:", laravelResult);
+//       console.log("Lead API response:", leadResponse);
+
+//       toast.success("Message sent successfully and stored in database!");
+
+//       // ✅ Clear form
 //       setFormData({
 //         name: "",
 //         email: "",
@@ -63,6 +82,7 @@
 //     }
 //   };
 
+
 //   return (
 //     <>
 //       <ToastContainer autoClose={3000} />
@@ -74,8 +94,7 @@
 //               <div className="section__title text-center mb-40 sub-ban-title-card">
 //                 <h2 className="title">Get in Touch</h2>
 //                 <p>
-//                   Partner with BoulouLPO for Trusted Legal Support Across
-//                   Borders
+//                   Partner with BoulouLPO for Trusted Legal Support Across Borders
 //                 </p>
 //               </div>
 //             </div>
@@ -97,7 +116,7 @@
 //                   </div>
 //                 </div>
 
-//                  <div className="contact__info-item">
+//                 <div className="contact__info-item">
 //                   <i className="flaticon-placeholder"></i>
 //                   <div className="contact-form-icon">
 //                     <h4 className="title">USA</h4>
@@ -190,8 +209,7 @@
 //                       onChange={handleChange}
 //                     />
 //                     <label htmlFor="saveInfo">
-//                       Save my name, email, and website in this browser for the
-//                       next time I comment.
+//                       Save my name, email, and website in this browser for the next time I comment.
 //                     </label>
 //                   </div>
 //                   <button
@@ -215,9 +233,9 @@
 //             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1253.2069871003147!2d-76.8011586!3d18.0172651!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8edb3fb8a59c4b63%3A0xf6409d2c8d1de39d!2s11-13%20Westminster%20Rd%2C%20Kingston%2C%20Jamaica!5e0!3m2!1sen!2sjm!4v1690740800000!5m2!1sen!2sjm"
 //             width="600"
 //             height="450"
-//             allowfullscreen=""
+//             allowFullScreen=""
 //             loading="lazy"
-//             referrerpolicy="no-referrer-when-downgrade"
+//             referrerPolicy="no-referrer-when-downgrade"
 //             style={{ width: "100%", height: "400px", border: 0 }}
 //           ></iframe>
 //         </div>
@@ -228,14 +246,14 @@
 
 // export default Contact;
 
+
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { createLead } from "../api/LeadService"; // Make sure path is correct
+import { createLead } from "../api/LeadService";
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -257,21 +275,47 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      // Prepare data for API
+      // Prepare payload
       const payload = {
         name: formData.name,
         email: formData.email,
-        phone: formData.number,
-        service_needs: formData.comment,
+        number: formData.number,
+        comment: formData.comment,
       };
 
-      // Call the API using your Axios service
-      const response = await createLead("boulou_lpo", "application", payload);
+      // ---------------------------
+      // Call Node.js SMTP API (Boulou LPO)
+      // ---------------------------
+      const smtpResponse = await fetch(
+        `http://smtp.aegiiz.us/api/v1/smtp/boulou-lpo/contact`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
-      console.log("API Response:", response);
-      toast.success("Message submitted successfully!");
+      if (!smtpResponse.ok) throw new Error("SMTP API failed");
+      const smtpResult = await smtpResponse.json();
+      console.log("SMTP API response:", smtpResult);
 
-      // Reset form after success
+      // ---------------------------
+      // (Optional) Store in your internal Leads DB
+      // ---------------------------
+      const leadResponse = await createLead("boulou_lpo", "application", {
+        name: payload.name,
+        email: payload.email,
+        phone: payload.number,
+        service_needs: payload.comment,
+      });
+
+      console.log("Lead API response:", leadResponse);
+
+      toast.success("Message sent successfully!");
+
+      // ✅ Clear form
       setFormData({
         name: "",
         email: "",
@@ -279,8 +323,8 @@ const Contact = () => {
         comment: "",
         saveInfo: false,
       });
-    } catch (error) {
-      console.error("Submission error:", error);
+    } catch (err) {
+      console.error("Submission error:", err);
       toast.error("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -297,7 +341,10 @@ const Contact = () => {
             <div className="col-lg-10">
               <div className="section__title text-center mb-40 sub-ban-title-card">
                 <h2 className="title">Get in Touch</h2>
-                <p>Partner with BoulouLPO for Trusted Legal Support Across Borders</p>
+                <p>
+                  Partner with BoulouLPO for Trusted Legal Support Across
+                  Borders
+                </p>
               </div>
             </div>
           </div>
@@ -411,7 +458,8 @@ const Contact = () => {
                       onChange={handleChange}
                     />
                     <label htmlFor="saveInfo">
-                      Save my name, email, and website in this browser for the next time I comment.
+                      Save my name, email, and website in this browser for the
+                      next time I comment.
                     </label>
                   </div>
                   <button
